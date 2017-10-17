@@ -9,6 +9,9 @@
   
 - [ ] Entities
     - [ ] Basic game entities
+
+- [ ] Sound
+    - [ ] Blips and boops
   
 - [ ] Controls
     - [ ] Binding keyboard input to game entities
