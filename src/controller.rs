@@ -1,28 +1,28 @@
 use std::collections::HashMap;
 
+use glutin;
 use glutin::WindowEvent;
 
 use transform::Transform;
 
 pub enum MouseInput {
-	Moved(WindowEvent::MouseMoved),
-	Wheel(WindowEvent::MouseWheel),
-	Left(WindowEvent::MouseLeft),
-	Right(WindowEvent::MouseRight),
-	Input(WindowEvent::MouseInput),
+	Moved(glutin::DeviceID, glutin::ElementState, ),
+	Wheel(),
+	Left(),
+	Right(),
+	Input(),
 }
 
 pub enum UserInput {
-	Keyboard(WindowEvent::KeyboardInput),
-	Mouse(),
+	Keyboard(),
+	Mouse(MouseInput),
 }
 
-pub struct InputMap<T, R, F>
-	where F: Fn(T) -> R {
-	pub map: HashMap<VirtualKeyCode, F>,
+pub trait ControlHandler {
+	
 }
 
-pub struct Controller<'a, T: 'a> {
+pub struct Controller<'a, T: 'a, H: ControlHandler> {
 	pub controlled: &'a mut T,
-	pub controller: 
+	pub controller: H,
 }
