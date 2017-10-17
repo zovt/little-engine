@@ -1,0 +1,8 @@
+[package]
+name = "little-engine"
+version = "0.1.0"
+authors = ["zovt <zovt@posteo.de>"]
+description = "The Little Game Engine That Could"
+license = "MPL-2.0"
+
+[dependencies]
