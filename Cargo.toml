@@ -6,3 +6,5 @@ description = "The Little Game Engine That Could"
 license = "MPL-2.0"
 
 [dependencies]
+cgmath = "0.15.0"
+glutin = "0.10.0"
