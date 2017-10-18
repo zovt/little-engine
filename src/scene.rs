@@ -1,13 +1,19 @@
-use id::ID;
+use object::Object;
 
 pub struct Scene {
-	pub id: ID,
+	pub name: String,
 	pub objects: Vec<Object>,
 }
 
 impl Scene {
-	pub fn new(id: ID) {
-		Scene { id: ID,
-		        objects: Vec::new(), }
+	pub fn new(name: &str) -> Self {
+		Self {
+			name: name.to_owned(),
+			objects: Vec::new(),
+		}
+	}
+
+	pub fn add_object(&mut self, obj: Object) {
+		self.objects.push(obj);
 	}
 }

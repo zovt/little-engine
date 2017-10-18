@@ -1,5 +1,1 @@
-#[derive(Hash)]
-pub enum ID {
-	String(String),
-	Num(u32),
-}
+pub type ID = u32;
