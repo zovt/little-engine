@@ -15,3 +15,6 @@
   
 - [ ] Controls
     - [ ] Binding keyboard input to game entities
+	
+- [ ] AI
+    - [ ] Bind AI to controller?

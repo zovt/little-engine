@@ -1,11 +1,7 @@
 use transform::Transform;
-
-#[derive(Hash)]
-pub enum ObjectID {
-	String(String),
-	Num(u32),
-}
+use id::ID;
 
 pub struct Object {
-	pub id: ObjectID,
+	pub id: ID,
+	pub tags: Vec<String>,
 }

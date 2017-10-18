@@ -13,3 +13,7 @@ pub mod objects;
 pub mod transform;
 pub mod controller;
 pub mod engine;
+pub mod events;
+pub mod scene;
+pub mod error;
+pub mod id;
