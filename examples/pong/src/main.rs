@@ -2,9 +2,7 @@ extern crate little_engine;
 
 use little_engine::engine::Engine;
 use little_engine::error::Error;
-use little_engine::id::ID;
 use little_engine::logger::Logger;
-use little_engine::scene::Scene;
 
 fn main() {
 	let mut ngn = Engine::new();
@@ -12,14 +10,19 @@ fn main() {
 	ngn.logger.debug("Debug");
 	ngn.logger.error(Error::new("Error"));
 
-	let mut pong = ngn.new_scene("pong");
-	let paddle1 = ngn.new_object();
-	let paddle2 = ngn.new_object();
-	let ball = ngn.new_object();
+	let pong = ngn.scenes.create("pong");
+	let paddle1 = ngn.objects.create();
+	let paddle2 = ngn.objects.create();
+	let ball = ngn.objects.create();
 
-	pong.add_object(paddle1);
-	pong.add_object(paddle2);
-	pong.add_object(ball);
+	ngn.scenes.acquire(pong, |p| {
+		p.add_object(paddle1);
+		p.add_object(paddle1);
+		p.add_object(paddle2);
+		p.add_object(ball);
+	});
+
+	ngn.load_scene(pong).map(|e| ngn.logger.error(e));
 
 	/*
 	pong::add_camera(camera);
@@ -29,11 +32,6 @@ fn main() {
 	/* Potential API Design?
 	let camera = Camera::new(ID::String("view"));
 
-	ngn::add_scene(pong);
-	match (ngn::load_scene(ID::String("pong"))) {
-		Some(e) => ngn::error_log(e),
-		None => (),
-	};
 
 	match (ngn::run()) {
 		Some(e) => ngn::error_log(e),
