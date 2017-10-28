@@ -8,4 +8,8 @@ license = "MPL-2.0"
 [dependencies]
 cgmath = "0.15.0"
 glutin = "0.10.0"
+gfx = "0.16.1"
+gfx_core = "0.7.2"
+gfx_window_glutin = "0.18.0"
+gfx_device_gl = "0.14.4"
 chrono = "0.4"

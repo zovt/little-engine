@@ -1,3 +1,5 @@
+#![feature(unboxed_closures)]
+#![feature(fn_traits)]
 #[cfg(test)]
 mod tests {
 	#[test]
@@ -16,3 +18,4 @@ pub mod engine;
 pub mod events;
 pub mod error;
 pub mod logger;
+pub mod graphics;

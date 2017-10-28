@@ -1,4 +1,5 @@
 use chrono::{DateTime, Local};
+use glutin::CreationError;
 
 #[derive(Clone)]
 pub struct Error {
@@ -12,5 +13,11 @@ impl Error {
 			time: Local::now(),
 			msg: msg.to_owned(),
 		}
+	}
+}
+
+impl From<CreationError> for Error {
+	fn from(e: CreationError) -> Self {
+		Error::new(&e.to_string())
 	}
 }

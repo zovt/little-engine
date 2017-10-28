@@ -1,5 +1,7 @@
 use chrono::{DateTime, Local};
 use error::Error;
+use glutin::{ControlFlow, Event, WindowEvent};
+use graphics::create_window;
 use logger::{Logger, StdoutLogger};
 use std::clone::Clone;
 use std::cmp::{Eq, PartialEq};
@@ -133,6 +135,7 @@ impl Manager<Scene> {
 
 pub struct Engine<L> {
 	start_time: DateTime<Local>,
+	running: bool,
 	pub objects: Manager<Object>,
 	pub scenes: Manager<Scene>,
 	pub logger: L,
@@ -142,6 +145,7 @@ impl Engine<StdoutLogger> {
 	pub fn new() -> Self {
 		Engine {
 			start_time: Local::now(),
+			running: false,
 			objects: Manager::new(),
 			scenes: Manager::new(),
 			logger: StdoutLogger::default(),
@@ -159,7 +163,31 @@ where
 		}
 	}
 
-	pub fn run() -> Option<Error> {
-		None
+	fn process_glutin_events(&mut self, ev: Event) {
+		match ev {
+			Event::WindowEvent {
+				window_id: _,
+				event,
+			} => {
+				match event {
+					WindowEvent::Closed => self.running = false,
+					_ => (),//self.events.add(ev),
+				}
+			}
+			_ => (),//self.events.add(ev),
+		}
+	}
+
+	pub fn run(&mut self, name: &str) -> Result<(), Error> {
+		let (_, mut ev_loop) = create_window(name)?;
+
+		self.running = true;
+		while self.running {
+			ev_loop.poll_events(|ev| self.process_glutin_events(ev));
+			// self.update_active_scene();
+			// self.draw_active_scene();
+		}
+
+		Ok(())
 	}
 }

@@ -24,6 +24,11 @@ fn main() {
 
 	ngn.load_scene(pong).map(|e| ngn.logger.error(e));
 
+	match ngn.run("pong") {
+		Ok(()) => (),
+		Err(e) => ngn.logger.error(e),
+	}
+
 	/*
 	pong::add_camera(camera);
 	pong::set_active_camera(ID::String("view"));
