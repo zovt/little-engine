@@ -13,3 +13,7 @@ gfx_core = "0.7.2"
 gfx_window_glutin = "0.18.0"
 gfx_device_gl = "0.14.4"
 chrono = "0.4"
+clippy = {version = "*", optional = true}
+
+[features]
+default = []

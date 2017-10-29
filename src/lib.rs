@@ -1,5 +1,9 @@
 #![feature(unboxed_closures)]
 #![feature(fn_traits)]
+#![feature(plugin)]
+#![cfg_attr(feature="clippy", feature(clippy))]
+#![cfg_attr(feature="clippy", plugin(clippy))]
+
 #[cfg(test)]
 mod tests {
 	#[test]

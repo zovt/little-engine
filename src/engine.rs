@@ -1,9 +1,9 @@
 use chrono::{DateTime, Local};
 use error::Error;
-use glutin::{ControlFlow, Event, WindowEvent};
+use events::{Event, EventFilter, EventHandler, EventOptions, EventType, HandleEvent};
+use glutin::{Event as GlutinEvent, WindowEvent};
 use graphics::create_window;
 use logger::{Logger, StdoutLogger};
-use std::clone::Clone;
 use std::cmp::{Eq, PartialEq};
 use std::collections::{HashMap, HashSet};
 use std::hash::{Hash, Hasher};
@@ -27,22 +27,19 @@ impl<T> Hash for ID<T> {
 	fn hash<H>(&self, state: &mut H)
 	where
 		H: Hasher, {
-		self.id.hash(state);
-	}
-}
-
-impl<T> PartialEq for ID<T> {
-	fn eq(&self, other: &Self) -> bool {
-		self.id.eq(&other.id)
+		self.id.hash(state)
 	}
 }
 
 impl<T> Clone for ID<T> {
 	fn clone(&self) -> Self {
-		Self {
-			id: self.id,
-			_t: PhantomData::default(),
-		}
+		Self::new(self.id)
+	}
+}
+
+impl<T> PartialEq for ID<T> {
+	fn eq(&self, other: &Self) -> bool {
+		self.id == other.id
 	}
 }
 
@@ -67,6 +64,7 @@ pub struct Scene {
 	pub id: ID<Scene>,
 	pub name: String,
 	pub objects: HashSet<ID<Object>>,
+	pub event_handlers: Vec<EventHandler<Box<EventFilter>, Box<HandleEvent>>>,
 }
 
 impl Scene {
@@ -75,6 +73,7 @@ impl Scene {
 			id,
 			name: name.to_owned(),
 			objects: HashSet::new(),
+			event_handlers: Vec::new(),
 		}
 	}
 
@@ -100,25 +99,20 @@ impl<D> Manager<D> {
 		self.items.remove(&item);
 	}
 
-	pub fn acquire<F: FnOnce(&mut D)>(&mut self, item: ID<D>, f: F) -> bool {
-		self.items
-			.get_mut(&item)
-			.and_then(|item| {
-				f(item);
-				Some(())
-			})
-			.is_some()
+	pub fn acquire<T, F: FnOnce(&mut D) -> T>(&mut self, item: ID<D>, f: F) -> Option<T> {
+		self.items.get_mut(&item).and_then(|item| Some(f(item)))
 	}
 }
 
+// TODO: Managers should reuse object IDs
 impl Manager<Object> {
 	pub fn create(&mut self) -> ID<Object> {
 		let obj = Object::new(self.fresh_id);
 		let id = obj.id;
 		self.items.insert(obj.id, obj);
 
-		self.fresh_id.id = self.fresh_id.id + 1;
-		self.items.get(&id).unwrap().id
+		self.fresh_id.id += 1;
+		self.items[&id].id
 	}
 }
 
@@ -128,8 +122,8 @@ impl Manager<Scene> {
 		let id = s.id;
 		self.items.insert(s.id, s);
 
-		self.fresh_id.id = self.fresh_id.id + 1;
-		self.items.get(&id).unwrap().id
+		self.fresh_id.id += 1;
+		self.items[&id].id
 	}
 }
 
@@ -139,16 +133,20 @@ pub struct Engine<L> {
 	pub objects: Manager<Object>,
 	pub scenes: Manager<Scene>,
 	pub logger: L,
+	active_scene: Option<ID<Scene>>,
+	events: Vec<Event>,
 }
 
-impl Engine<StdoutLogger> {
-	pub fn new() -> Self {
+impl Default for Engine<StdoutLogger> {
+	fn default() -> Self {
 		Engine {
 			start_time: Local::now(),
 			running: false,
 			objects: Manager::new(),
 			scenes: Manager::new(),
 			logger: StdoutLogger::default(),
+			active_scene: None,
+			events: Vec::new(),
 		}
 	}
 }
@@ -156,27 +154,46 @@ impl Engine<StdoutLogger> {
 impl<L> Engine<L>
 where
 	L: Logger, {
-	pub fn load_scene(&mut self, scene: ID<Scene>) -> Option<Error> {
-		match self.scenes.items.get(&scene) {
-			None => Some(Error::new("Missing scene")),
-			_ => None,
+	pub fn set_active_scene(&mut self, scene: ID<Scene>) {
+		self.active_scene = Some(scene);
+	}
+
+	fn process_glutin_events(&mut self, ev: GlutinEvent) {
+		if let GlutinEvent::WindowEvent { event: WindowEvent::Closed, .. } = ev {
+			self.running = false;
+			return;
+		}
+
+		self.events
+			.push(Event::new(EventType::Window(ev), EventOptions { single_use: false }));
+	}
+
+	fn update(&mut self) -> Result<(), Error> {
+		if let Some(scene_h) = self.active_scene {
+			let events: Vec<_> = self.events.drain(..).collect();
+
+			self.scenes
+				.acquire(scene_h, |scene| {
+					events
+						.iter()
+						.flat_map(|ev| {
+							scene
+								.event_handlers
+								.iter()
+								.filter(|eh| eh.filter.handles(ev))
+								.flat_map(|eh| eh.handler.handle(ev))
+								.collect::<Vec<Event>>()
+						})
+						.collect::<Vec<Event>>()
+				})
+				.map(|mut evs| self.events.append(&mut evs))
+				.map_or(Err(Error::new("Missing Scene")), Ok)
+		} else {
+			Ok(())
 		}
 	}
 
-	fn process_glutin_events(&mut self, ev: Event) {
-		match ev {
-			Event::WindowEvent {
-				window_id: _,
-				event,
-			} => {
-				match event {
-					WindowEvent::Closed => self.running = false,
-					_ => (),//self.events.add(ev),
-				}
-			}
-			_ => (),//self.events.add(ev),
-		}
-	}
+	fn draw(&mut self) {}
 
 	pub fn run(&mut self, name: &str) -> Result<(), Error> {
 		let (_, mut ev_loop) = create_window(name)?;
@@ -184,8 +201,7 @@ where
 		self.running = true;
 		while self.running {
 			ev_loop.poll_events(|ev| self.process_glutin_events(ev));
-			// self.update_active_scene();
-			// self.draw_active_scene();
+			self.update().and_then(|_| Ok(self.draw()))?
 		}
 
 		Ok(())

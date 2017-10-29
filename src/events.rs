@@ -1,4 +1,5 @@
 use chrono::{DateTime, Local};
+use engine::{Engine, Scene};
 use glutin;
 
 pub struct PhysicsEvent;
@@ -10,7 +11,9 @@ pub enum EventType {
 	Window(glutin::Event),
 }
 
-pub struct EventOptions;
+pub struct EventOptions {
+	pub single_use: bool,
+}
 
 pub struct Event {
 	pub timestamp: DateTime<Local>,
@@ -29,15 +32,20 @@ impl Event {
 }
 
 pub trait EventFilter {
-	fn handles(&self, ev: Event) -> bool {
-		false
-	}
+	fn handles(&self, _: &Event) -> bool;
 }
 
-impl EventFilter for Fn(Event) -> bool {
-	fn handles(&self, ev: Event) -> bool {
+impl EventFilter for Fn(&Event) -> bool {
+	fn handles(&self, ev: &Event) -> bool {
 		self(ev)
 	}
 }
 
-pub struct EventHandler {}
+pub trait HandleEvent {
+	fn handle(&self, ev: &Event) -> Vec<Event>;
+}
+
+pub struct EventHandler<F, H> {
+	pub filter: F,
+	pub handler: H,
+}
