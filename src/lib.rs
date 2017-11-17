@@ -23,3 +23,7 @@ pub mod events;
 pub mod error;
 pub mod logger;
 pub mod graphics;
+pub mod entity;
+pub mod scene;
+pub mod util;
+pub mod camera;

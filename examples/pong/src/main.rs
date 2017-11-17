@@ -1,46 +1,24 @@
 extern crate little_engine;
 
-use little_engine::engine::Engine;
-use little_engine::error::Error;
-use little_engine::logger::Logger;
+use little_engine::entity::{Entity, EntityType};
+use little_engine::scene::Scene;
 
 fn main() {
-	let mut ngn = Engine::new();
-	ngn.logger.info("Hello, World");
-	ngn.logger.debug("Debug");
-	ngn.logger.error(Error::new("Error"));
+	let left_paddle = Entity::new(EntityType::Live, Some("left paddle"));
+	let right_paddle = Entity::new(EntityType::Live, Some("right paddle"));
+	let ball = Entity::new(EntityType::Live, Some("ball"));
+	// let camera = Camera::new();
 
-	let pong = ngn.scenes.create("pong");
-	let paddle1 = ngn.objects.create();
-	let paddle2 = ngn.objects.create();
-	let ball = ngn.objects.create();
-
-	ngn.scenes.acquire(pong, |p| {
-		p.add_object(paddle1);
-		p.add_object(paddle1);
-		p.add_object(paddle2);
-		p.add_object(ball);
-	});
-
-	ngn.load_scene(pong).map(|e| ngn.logger.error(e));
-
-	match ngn.run("pong") {
-		Ok(()) => (),
-		Err(e) => ngn.logger.error(e),
-	}
+	let mut pong_scene = Scene::default();
+	pong_scene.entities.push(left_paddle);
+	pong_scene.entities.push(right_paddle);
+	pong_scene.entities.push(ball);
 
 	/*
-	pong::add_camera(camera);
-	pong::set_active_camera(ID::String("view"));
-	 */
+	let mut renderer = Renderer::new();
+	let mut window_events = WindowEvents::new();
+	let mut game_loop = GameLoop::new();
 
-	/* Potential API Design?
-	let camera = Camera::new(ID::String("view"));
-
-
-	match (ngn::run()) {
-		Some(e) => ngn::error_log(e),
-		None => (),
-	}
-	 */
+	game_loop.run(renderer, window_events, scene);
+	*/
 }

@@ -1,5 +1,4 @@
 use chrono::{DateTime, Local};
-use engine::{Engine, Scene};
 use glutin;
 
 pub struct PhysicsEvent;
