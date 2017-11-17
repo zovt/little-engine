@@ -5,9 +5,16 @@ use little_engine::gameloop::GameLoop;
 use little_engine::scene::Scene;
 
 fn main() {
+	let paddle_physics = Entity::physics();
+
 	let left_paddle = Entity::new(EntityType::Entity, Some("left paddle"));
 	let right_paddle = Entity::new(EntityType::Entity, Some("right paddle"));
 	let ball = Entity::new(EntityType::Entity, Some("ball"));
+
+	// TODO: Top and Bottom walls
+	// TODO: "Field"
+	// TODO: Score zones
+	// TODO: Score counters
 	// let camera = Camera::new();
 
 	let mut pong_scene = Scene::default();

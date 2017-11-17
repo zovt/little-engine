@@ -30,4 +30,12 @@ impl<'a> Entity<'a> {
 			children: Vec::new(),
 		}
 	}
+
+	pub fn physics() -> Self {
+		Self {
+			entity_type: EntityType::Physics,
+			name: None,
+			children: Vec::new(),
+		}
+	}
 }
