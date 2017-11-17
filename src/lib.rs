@@ -17,7 +17,6 @@ pub mod logger;
 pub mod graphics;
 pub mod entity;
 pub mod scene;
-pub mod util;
 pub mod camera;
 pub mod update;
 pub mod gameloop;
