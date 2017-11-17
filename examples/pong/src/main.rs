@@ -1,12 +1,13 @@
 extern crate little_engine;
 
 use little_engine::entity::{Entity, EntityType};
+use little_engine::gameloop::GameLoop;
 use little_engine::scene::Scene;
 
 fn main() {
-	let left_paddle = Entity::new(EntityType::Live, Some("left paddle"));
-	let right_paddle = Entity::new(EntityType::Live, Some("right paddle"));
-	let ball = Entity::new(EntityType::Live, Some("ball"));
+	let left_paddle = Entity::new(EntityType::Entity, Some("left paddle"));
+	let right_paddle = Entity::new(EntityType::Entity, Some("right paddle"));
+	let ball = Entity::new(EntityType::Entity, Some("ball"));
 	// let camera = Camera::new();
 
 	let mut pong_scene = Scene::default();
@@ -17,8 +18,8 @@ fn main() {
 	/*
 	let mut renderer = Renderer::new();
 	let mut window_events = WindowEvents::new();
-	let mut game_loop = GameLoop::new();
+	 */
 
-	game_loop.run(renderer, window_events, scene);
-	*/
+	let mut game_loop = GameLoop {};
+	game_loop.run(pong_scene);
 }
