@@ -1,5 +1,4 @@
-use cgmath::Matrix4;
-use cgmath::Zero;
+use cgmath::{Matrix4, One};
 
 
 pub struct Transform {
@@ -8,8 +7,6 @@ pub struct Transform {
 
 impl Default for Transform {
 	fn default() -> Self {
-		Transform {
-			matrix: Matrix4::zero(),
-		}
+		Transform { matrix: Matrix4::one() }
 	}
 }
