@@ -20,6 +20,6 @@ fn main() {
 	let mut window_events = WindowEvents::new();
 	 */
 
-	let mut game_loop = GameLoop {};
+	let mut game_loop = GameLoop::default();
 	game_loop.run(pong_scene);
 }

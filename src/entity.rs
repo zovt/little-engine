@@ -1,3 +1,4 @@
+use chrono::Duration;
 use update::Update;
 
 #[derive(Copy, Clone, Hash)]
@@ -15,8 +16,9 @@ pub struct Entity<'a> {
 }
 
 impl<'a> Update for Entity<'a> {
-	fn update(&mut self) {
+	fn update(&mut self, timestep: Duration) {
 		println!("{}", self.name.unwrap_or(""));
+		self.children.iter_mut().map(|e| e.update(timestep)).count();
 	}
 }
 
