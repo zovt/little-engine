@@ -1,8 +1,11 @@
-use cgmath::{Matrix4, One};
+use cgmath::{Matrix4, One, Vector3};
 
 
 pub struct Transform {
-	pub matrix: Matrix4<f32>,
+	matrix: Matrix4<f32>,
+	dirty: bool,
+
+	position: Vector3<f32>,
 }
 
 impl Default for Transform {
