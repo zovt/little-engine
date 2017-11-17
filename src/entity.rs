@@ -1,9 +1,9 @@
 use chrono::Duration;
 use update::Update;
 
-#[derive(Copy, Clone, Hash)]
+#[derive(Copy, Clone, Hash, Eq, PartialEq)]
 pub enum EntityType {
-	Entity,
+	Node,
 	Drawable,
 	Physics,
 }
