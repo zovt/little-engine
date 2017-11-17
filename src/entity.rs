@@ -31,11 +31,11 @@ impl<'a> Entity<'a> {
 		}
 	}
 
-	pub fn physics() -> Self {
-		Self {
-			entity_type: EntityType::Physics,
-			name: None,
-			children: Vec::new(),
-		}
+	pub fn physics(name: Option<&'a str>) -> Self {
+		Self::new(EntityType::Physics, name)
+	}
+
+	pub fn attach(&mut self, entity: Entity<'a>) {
+		self.children.push(entity);
 	}
 }

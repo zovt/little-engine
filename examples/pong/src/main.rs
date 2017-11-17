@@ -5,10 +5,14 @@ use little_engine::gameloop::GameLoop;
 use little_engine::scene::Scene;
 
 fn main() {
-	let paddle_physics = Entity::physics();
+	let paddle_physics = Entity::physics(Some("paddle physics"));
 
-	let left_paddle = Entity::new(EntityType::Entity, Some("left paddle"));
-	let right_paddle = Entity::new(EntityType::Entity, Some("right paddle"));
+	let mut left_paddle = Entity::new(EntityType::Entity, Some("left paddle"));
+	left_paddle.attach(paddle_physics.clone());
+
+	let mut right_paddle = Entity::new(EntityType::Entity, Some("right paddle"));
+	right_paddle.attach(paddle_physics.clone());
+
 	let ball = Entity::new(EntityType::Entity, Some("ball"));
 
 	// TODO: Top and Bottom walls
