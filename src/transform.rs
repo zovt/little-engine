@@ -59,16 +59,22 @@ impl Transformation {
 		self.dirty = false;
 	}
 
-	pub fn set_matrix(&mut self, matrix: Matrix4<f32>) {
+	pub fn set_matrix(&mut self, mut matrix: Matrix4<f32>) {
 		self.matrix = matrix;
 		self.position = Vector3::new(matrix.row(0)[3], matrix.row(1)[3], matrix.row(2)[3]);
 		self.scale = (matrix[0].magnitude(), matrix[1].magnitude(), matrix[2].magnitude());
 
-		matrix
-			.replace_col(3, Vector4::new(0f32, 0f32, 0f32, matrix[3][3]));
-		matrix.replace_col(0, matrix[0] / self.scale.0);
-		matrix.replace_col(1, matrix[1] / self.scale.1);
-		matrix.replace_col(2, matrix[2] / self.scale.2);
+		let last_col = Vector4::new(0f32, 0f32, 0f32, matrix[3][3]);
+		matrix.replace_col(3, last_col);
+
+		let col_0_s = matrix[0] / self.scale.0;
+		matrix.replace_col(0, col_0_s);
+
+		let col_1_s = matrix[1] / self.scale.1;
+		matrix.replace_col(1, col_1_s);
+
+		let col_2_s = matrix[2] / self.scale.2;
+		matrix.replace_col(2, col_2_s);
 
 		self.rotation.0 = Rad::atan2(matrix[2][3], matrix[3][3]);
 		self.rotation.1 = Rad::atan2(
@@ -80,7 +86,7 @@ impl Transformation {
 		self.dirty = false;
 	}
 
-	pub fn move_to(self, x: f32, y: f32, z: f32) -> Self {
+	pub fn move_to(mut self, x: f32, y: f32, z: f32) -> Self {
 		self.dirty = true;
 		self.position.x = x;
 		self.position.y = y;
@@ -88,15 +94,15 @@ impl Transformation {
 		self
 	}
 
-	pub fn move_to_x(&mut self, x: f32) -> Self {
+	pub fn move_to_x(self, x: f32) -> Self {
 		self.move_to(x, self.position.y, self.position.z)
 	}
 
-	pub fn move_to_y(&mut self, y: f32) -> Self {
+	pub fn move_to_y(self, y: f32) -> Self {
 		self.move_to(self.position.x, y, self.position.z)
 	}
 
-	pub fn move_to_z(&mut self, z: f32) -> Self {
+	pub fn move_to_z(self, z: f32) -> Self {
 		self.move_to(self.position.x, self.position.y, z)
 	}
 
@@ -108,19 +114,19 @@ impl Transformation {
 		)
 	}
 
-	pub fn move_by_x(&mut self, x: f32) -> Self {
+	pub fn move_by_x(self, x: f32) -> Self {
 		self.move_by(x, self.position.y, self.position.z)
 	}
 
-	pub fn move_by_y(&mut self, y: f32) -> Self {
+	pub fn move_by_y(self, y: f32) -> Self {
 		self.move_by(self.position.x, y, self.position.z)
 	}
 
-	pub fn move_by_z(&mut self, z: f32) -> Self {
+	pub fn move_by_z(self, z: f32) -> Self {
 		self.move_by(self.position.x, self.position.y, z)
 	}
 
-	pub fn rotate_to<X, Y, Z>(self, x: X, y: Y, z: Z) -> Self
+	pub fn rotate_to<X, Y, Z>(mut self, x: X, y: Y, z: Z) -> Self
 	where
 		X: Into<Rad<f32>>,
 		Y: Into<Rad<f32>>,
@@ -181,7 +187,7 @@ impl Transformation {
 		self.rotate_by(self.rotation.0, self.rotation.1, z)
 	}
 
-	pub fn scale_to(self, x: f32, y: f32, z: f32) -> Self {
+	pub fn scale_to(mut self, x: f32, y: f32, z: f32) -> Self {
 		self.dirty = true;
 		self.scale.0 = x;
 		self.scale.1 = y;
@@ -221,7 +227,7 @@ impl Transformation {
 impl Mul<Transformation> for Transformation {
 	type Output = Transformation;
 
-	fn mul(self, other: Transformation) -> Self::Output {
+	fn mul(mut self, mut other: Transformation) -> Self::Output {
 		let mut t = Transformation::default();
 		t.set_matrix(self.matrix() * other.matrix());
 		t
@@ -231,7 +237,7 @@ impl Mul<Transformation> for Transformation {
 impl Add<Transformation> for Transformation {
 	type Output = Transformation;
 
-	fn add(self, other: Transformation) -> Self::Output {
+	fn add(mut self, mut other: Transformation) -> Self::Output {
 		let mut t = Transformation::default();
 		t.set_matrix(self.matrix() + other.matrix());
 		t
