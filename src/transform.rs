@@ -1,5 +1,6 @@
 use cgmath::{Matrix4, Rad, Transform, Vector3, Vector4};
 use cgmath::prelude::*;
+use std::ops::{Add, Mul};
 
 #[derive(Copy, Clone, PartialEq)]
 pub struct Transformation {
@@ -24,7 +25,7 @@ impl Default for Transformation {
 }
 
 impl Transformation {
-	pub fn transform(&mut self) -> Matrix4<f32> {
+	pub fn matrix(&mut self) -> Matrix4<f32> {
 		if self.dirty {
 			self.update_matrix();
 		}
@@ -54,6 +55,27 @@ impl Transformation {
 		// Scale
 		let scale = Matrix4::from_nonuniform_scale(self.scale.0, self.scale.1, self.scale.2);
 		self.matrix = self.matrix * scale;
+
+		self.dirty = false;
+	}
+
+	pub fn set_matrix(&mut self, matrix: Matrix4<f32>) {
+		self.matrix = matrix;
+		self.position = Vector3::new(matrix.row(0)[3], matrix.row(1)[3], matrix.row(2)[3]);
+		self.scale = (matrix[0].magnitude(), matrix[1].magnitude(), matrix[2].magnitude());
+
+		matrix
+			.replace_col(3, Vector4::new(0f32, 0f32, 0f32, matrix[3][3]));
+		matrix.replace_col(0, matrix[0] / self.scale.0);
+		matrix.replace_col(1, matrix[1] / self.scale.1);
+		matrix.replace_col(2, matrix[2] / self.scale.2);
+
+		self.rotation.0 = Rad::atan2(matrix[2][3], matrix[3][3]);
+		self.rotation.1 = Rad::atan2(
+			-matrix[1][3],
+			f32::sqrt(matrix[2][3] * matrix[2][3] + matrix[3][3] * matrix[3][3]),
+		);
+		self.rotation.2 = Rad::atan2(matrix[1][2], matrix[1][1]);
 
 		self.dirty = false;
 	}
@@ -180,7 +202,7 @@ impl Transformation {
 	}
 
 	pub fn scale_by(self, x: f32, y: f32, z: f32) -> Self {
-		self.scale_to(self.scale.0 + x, self.scale.1 + y, self.scale.2 + z)
+		self.scale_to(self.scale.0 * x, self.scale.1 * y, self.scale.2 * z)
 	}
 
 	pub fn scale_by_x(self, x: f32) -> Self {
@@ -193,5 +215,25 @@ impl Transformation {
 
 	pub fn scale_by_z(self, z: f32) -> Self {
 		self.scale_by(self.scale.0, self.scale.1, z)
+	}
+}
+
+impl Mul<Transformation> for Transformation {
+	type Output = Transformation;
+
+	fn mul(self, other: Transformation) -> Self::Output {
+		let mut t = Transformation::default();
+		t.set_matrix(self.matrix() * other.matrix());
+		t
+	}
+}
+
+impl Add<Transformation> for Transformation {
+	type Output = Transformation;
+
+	fn add(self, other: Transformation) -> Self::Output {
+		let mut t = Transformation::default();
+		t.set_matrix(self.matrix() + other.matrix());
+		t
 	}
 }
