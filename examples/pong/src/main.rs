@@ -2,18 +2,21 @@ extern crate little_engine;
 
 use little_engine::entity::{Entity, EntityType};
 use little_engine::gameloop::GameLoop;
+use little_engine::physics::PhysicsData;
 use little_engine::scene::Scene;
 
 fn main() {
-	let paddle_physics = Entity::physics(Some("paddle physics"));
+	let paddle_physics = Entity::physics(Some("paddle physics"), PhysicsData {});
 
-	let mut left_paddle = Entity::new(EntityType::Node, Some("left paddle"));
+	let mut left_paddle = Entity::new(Some("left paddle"), EntityType::Node);
 	left_paddle.attach(paddle_physics.clone());
 
-	let mut right_paddle = Entity::new(EntityType::Node, Some("right paddle"));
+	let mut right_paddle = Entity::new(Some("right paddle"), EntityType::Node);
 	right_paddle.attach(paddle_physics.clone());
 
-	let ball = Entity::new(EntityType::Node, Some("ball"));
+	let ball_physics = Entity::physics(Some("ball physics"), PhysicsData {});
+	let mut ball = Entity::new(Some("ball"), EntityType::Node);
+	ball.attach(ball_physics);
 
 	// TODO: Top and Bottom walls
 	// TODO: "Field"
