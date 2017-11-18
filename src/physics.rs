@@ -1,6 +1,6 @@
 use cgmath::{Vector2, Vector3};
 
-#[derive(Copy, Clone, Debug, Hash, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Square {
 	pub width: f32,
 	pub height: f32,
@@ -15,7 +15,7 @@ impl Into<Vector2<f32>> for Square {
 	}
 }
 
-#[derive(Copy, Clone, Debug, Hash, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Box {
 	pub width: f32,
 	pub height: f32,
@@ -32,4 +32,5 @@ impl Into<Vector3<f32>> for Box {
 	}
 }
 
+#[derive(Copy, Clone, Debug, Hash, Eq, PartialEq)]
 pub struct PhysicsData {}

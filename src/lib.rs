@@ -20,3 +20,4 @@ pub mod scene;
 pub mod camera;
 pub mod update;
 pub mod gameloop;
+pub mod physics;
