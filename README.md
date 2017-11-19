@@ -1,4 +1,4 @@
-# little-engine
+# Little Engine
 The Little Engine is an open-source 3D game engine with a focus on
 aesthetics.
 
