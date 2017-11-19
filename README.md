@@ -2,6 +2,11 @@
 The Little Engine is an open-source 3D game engine with a focus on
 aesthetics.
 
+## Goals
+- API aesthetics and stylization
+- Cover common use cases (and allow other cases to be implemented by
+  the end user)
+
 ## API Stability Disclaimer
 Until the first major version is released, expect drastic API changes
 frequently and without warning.
