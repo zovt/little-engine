@@ -18,6 +18,18 @@ fn main() {
 	let mut ball = Entity::new(Some("ball"), EntityType::Node);
 	ball.attach(ball_physics);
 
+	// TODO: if ball hits paddle or wall, ball should bounce in the opposite
+	// direction
+	// ball.attach(collider);
+	// top_wall.attach(collider);
+	// bottom_wall.attach(collider);
+	// etc...
+
+	// when(ball).hits(top_wall).or(bottom_wall).do(ball.reverse_vertical());
+	// when(ball).hits(left_paddle).or(right_paddle).do(ball.reverse_horizontal());
+	// when(ball).hits(left_score_zone).do(score.increment(left); serve());
+	// when(ball).hits(right_score_zone).do(score.increment(right); serve());
+
 	// TODO: Top and Bottom walls
 	// TODO: "Field"
 	// TODO: Score zones

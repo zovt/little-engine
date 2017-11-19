@@ -10,6 +10,10 @@ pub enum EntityType {
 	Physics(PhysicsData),
 }
 
+// DESIGN: Want game entities to be easily composable
+// CONSIDERATION: Tree-like structure?
+// PROS:
+// CONS: Memory fragmentation
 #[derive(Clone)]
 pub struct Entity<'a> {
 	name: Option<&'a str>,
