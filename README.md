@@ -2,6 +2,10 @@
 The Little Engine is an open-source 3D game engine with a focus on
 aesthetics.
 
+## Contributing
+Contributions are appreciated. See [CONTRIBUTING](./CONTRIBUTING.md)
+for more information.
+
 ## Licensing
 The Little Engine is licensed under the terms of the MPL-2.0.
 
