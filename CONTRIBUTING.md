@@ -1,4 +1,7 @@
 # Contributing to Little Engine
+## Bugs
+Include everything needed to reproduce the bug in your bug report.
+
 ## Pull Request Pre-Requisites
 ### Format your code
 Run [rustfmt](https://github.com/rust-lang-nursery/rustfmt) on your
