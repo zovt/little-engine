@@ -1,18 +1,16 @@
 # little-engine
-The Little Engine That Could is a game engine with a focus on ease-of-use and 
-rapid prototyping
+The Little Engine is an open-source 3D game engine with a focus on
+aesthetics.
 
 ## Licensing
-The Little Engine, and all of the code in this repository, is licensed under the
-terms of the MPL-2.0 license. Essentially, the aim of using this license is so
-that users of this engine publish any changes made to the source code of this
-project, making it better for everyone. Please be a good open-source citizen and
-follow the license.
+The Little Engine is licensed under the terms of the MPL-2.0.
 
-If you end up using this for a project, please include a reference text file
-saying that you've used this engine.
+If you use this engine in a commercial project, you must provide
+attribution. If you distribute your game in a way which prevents the
+user from accessing the file contents, or you opt not to include the
+source in your game's distribution, you must you must prominently
+express somewhere easily accesible to users that you have used this
+code.
 
-However, you need NOT publish any source code that USES the unmodified engine.
-This includes your own game code, assets, etc. You may also ADD code in new
-files to the engine source directory without publishing that code. However, it
-is encouraged to do so if you think that others may benefit from that code!
+You do not have to share/publish/provide any additional files you add
+to the engine source, or your game's source code.
