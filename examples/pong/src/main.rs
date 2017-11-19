@@ -20,6 +20,7 @@ fn main() {
 
 	// TODO: if ball hits paddle or wall, ball should bounce in the opposite
 	// direction
+	// ball = Ball::new();
 	// ball.attach(collider);
 	// top_wall.attach(collider);
 	// bottom_wall.attach(collider);
